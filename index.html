@@ -1,170 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoFazenda - Agrinho 2026</title>
+    <style>
+        /* Cores e Estilo Global */
+        :root {
+            --verde-escuro: #1b5e20;
+            --verde-principal: #4caf50;
+            --verde-claro: #e8f5e9;
+            --texto-escuro: #2c3e50;
+            --marron-terra: #795548;
+        }
 
-import time
-import random
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #c8e6c9 0%, #e8f5e9 100%);
+            color: var(--texto-escuro);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-def mostrar_status(dinheiro, produtividade, sustentabilidade, tecnologias):
-    """Exibe o painel com o status atual do jogador."""
-    print("\n" + "="*50)
-    print("📊 STATUS DA SUA ECOFAZENDA:")
-    print(f"💰 Orçamento: R$ {dinheiro}")
-    print(f"🌾 Produtividade Atual: {produtividade}%")
-    print(f"🌱 Sustentabilidade: {sustentabilidade}%")
-    print(f"🚀 Tecnologias Desbloqueadas: {', '.join(tecnologias) if tecnologias else 'Nenhuma'}")
-    print("="*50 + "\n")
+        .container {
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.15);
+            padding: 35px;
+            max-width: 650px;
+            width: 100%;
+            text-align: center;
+            border-top: 10px solid var(--verde-principal);
+            transition: all 0.3s ease;
+        }
 
-def evento_climatico(sustentabilidade):
-    """Função que gera um evento aleatório baseado no clima."""
-    print("🌤️  [EVENTO CLIMÁTICO DO ANO]  🌤️")
-    time.sleep(1)
-    
-    evento = random.choice(["seca", "chuva_na_medida", "GEADA"])
-    
-    if evento == "seca":
-        print("⚠️ Uma seca severa atingiu a região!")
-        if sustentabilidade > 60:
-            print("💡 Como sua sustentabilidade é alta, seu solo segurou a umidade! Pouco impacto.")
-            return 0, -5
-        else:
-            print("❌ Solo degradado! A seca causou quebra de safra e prejuízo financeiro.")
-            return -8000, -15
+        /* Tela de Index (Menu Inicial) */
+        #tela-inicial {
+            display: block;
+        }
+
+        .logo-agrinho {
+            font-size: 64px;
+            margin-bottom: 10px;
+            animation: balanco 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes balanco {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+
+        h1 {
+            color: var(--verde-escuro);
+            font-size: 28px;
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tagline {
+            font-size: 16px;
+            color: var(--marron-terra);
+            font-weight: 600;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .regras-card {
+            background-color: var(--verde-claro);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: left;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--verde-principal);
+        }
+
+        .regras-card h3 {
+            margin-top: 0;
+            color: var(--verde-escuro);
+        }
+
+        /* Tela do Jogo (Escondida no início) */
+        #tela-jogo {
+            display: none;
+        }
+
+        /* Painel de Controle (Dashboard) */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .status-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .status-ico {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .status-lbl {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #7f8c8d;
+            font-weight: bold;
+        }
+
+        .status-num {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--verde-escuro);
+        }
+
+        /* Caixa de Texto da História */
+        .cenario-caixa {
+            font-size: 16px;
+            line-height: 1.6;
+            background-color: #fffdf9;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #f0e6d2;
+            margin-bottom: 25px;
+            text-align: left;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        /* Botões Interativos */
+        .botoes-grupo {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        button {
+            background-color: var(--verde-principal);
+            color: white;
+            border: none;
+            padding: 16px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        button:hover {
+            background-color: var(--verde-escuro);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn-opcao {
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-numero {
+            background-color: rgba(255,255,255,0.3);
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .btn-reiniciar {
+            background-color: var(--marron-terra);
+        }
+        .btn-reiniciar:hover {
+            background-color: #5d4037;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <div id="tela-inicial">
+            <div class="logo-agrinho">🚜🌱</div>
+            <h1>EcoFazenda</h1>
+            <div class="tagline">“Agro forte, futuro sustentável: equilíbrio entre produção e meio ambiente”</div>
             
-    elif evento == "GEADA":
-        print("❄️ Uma geada inesperada congelou parte das folhas.")
-        print("Independente do manejo, haverá um pequeno custo de recuperação.")
-        return -4000, -5
-        
-    else:
-        print("🌧️ O clima colaborou! Chuvas na medida certa para a plantação.")
-        return 5000, 5
+            <div class="regras-card">
+                <h3>Mecanismo de Jogo:</h3>
+                <p>• Gerencie os recursos de uma propriedade agrícola ao longo dos anos.</p>
+                <p>• Suas decisões impactam o <b>lucro</b>, a <b>produtividade</b> e a <b>saúde do planeta</b>.</p>
+                <p>• O objetivo é manter o agro forte sem destruir o meio ambiente!</p>
+            </div>
 
-def menu_tecnologia(dinheiro, tecnologias):
-    """Função que permite comprar tecnologias sustentáveis no início do turno."""
-    print("🔬 LAB DE INOVAÇÃO AGRO:")
-    print("Deseja investir em tecnologia antes de tomar sua decisão?")
-    
-    opcoes = []
-    if "Drones" not in tecnologias:
-        print("[1] Comprar Drones de Monitoramento (Custo: R$ 8.000 | +10% Produtividade)")
-        opcoes.append("1")
-    if "Bioinsumos" not in tecnologias:
-        print("[2] Desenvolver Bioinsumos/Adubo Orgânico (Custo: R$ 6.000 | +15% Sustentabilidade)")
-        opcoes.append("2")
-    print("[0] Não investir em tecnologia agora.")
-    
-    escolha = input("Escolha uma opção: ")
-    
-    if escolha == "1" and "1" in opcoes:
-        if dinheiro >= 8000:
-            print("\n🛸 Drones adquiridos! Agora você detecta pragas mais rápido.")
-            tecnologias.append("Drones")
-            return 8000, 10, 0
-        else:
-            print("\n❌ Saldo insuficiente para comprar Drones.")
-    elif escolha == "2" and "2" in opcoes:
-        if dinheiro >= 6000:
-            print("\n🧪 Bioinsumos liberados! Menos química no seu solo.")
-            tecnologias.append("Bioinsumos")
-            return 6000, 0, 15
-        else:
-            print("\n❌ Saldo insuficiente para Bioinsumos.")
+            <button style="width: 100%;" onclick="iniciarJogo()">🚀 Iniciar Jornada Agrinho</button>
+        </div>
+
+        <div id="tela-jogo">
+            <h1>Painel de Controle</h1>
+            <div id="ano-atual" style="font-weight: bold; color: var(--marron-terra); margin-bottom: 15px;">ANO 1</div>
+
+            <div class="dashboard">
+                <div class="status-card">
+                    <span class="status-ico">💰</span>
+                    <span class="status-lbl">Finanças</span>
+                    <span id="txt-dinheiro" class="status-num">R$ 50.000</span>
+                </div>
+                <div class="status-card">
+                    <span class="status-ico">🌾</span>
+                    <span class="status-lbl">Produção</span>
+                    <span id="txt-prod" class="status-num">50%</span>
+                </div>
+                <div class="status-card">
+                    <span class="status-ico">🌍</span>
+                    <span class="status-lbl">Sustentabilidade</span>
+                    <span id="txt-sust" class="status-num">50%</span>
+                </div>
+            </div>
+
+            <div id="cenario-texto" class="cenario-caixa">
+                Carregando dados da fazenda...
+            </div>
+
+            <div class="botoes-grupo">
+                <button id="btn-opt1" class="btn-opcao" onclick="processarEscolha(1)">
+                    <span class="btn-numero">1</span> <span id="txt-opt1">Opção 1</span>
+                </button>
+                <button id="btn-opt2" class="btn-opcao" onclick="processarEscolha(2)">
+                    <span class="btn-numero">2</span> <span id="txt-opt2">Opção 2</span>
+                </button>
+                <button id="btn-voltar" class="btn-reiniciar" onclick="voltarAoMenu()" style="display: none;">🎯 Voltar ao Menu</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Lógica do Sistema em JavaScript
+        let dinheiro, produtividade, sustentabilidade, rodada;
+
+        const fases = [
+            {
+                titulo: "ANO 1: Manejo Inteligente do Solo",
+                narrativa: "O solo é a base de tudo. Para preparar a terra visando a nova safra de grãos, qual caminho tecnológico você escolhe?",
+                op1: "Uso intensivo de grades pesadas e arado tradicional (Rápido e limpa o terreno, mas gera compactação e perda de matéria orgânica).",
+                op2: "Implementar o Sistema de Plantio Direto na palhada (Protege o solo de erosões, fixa carbono e mantém microrganismos vivos).",
+                efeitos1: { din: 12000, prod: 10, sust: -25 },
+                efeitos2: { din: -4000, prod: 15, sust: 20 }
+            },
+            {
+                titulo: "ANO 2: Defesa Sanitária Vegetal",
+                narrativa: "Apareceu um surto de lagartas na plantação. O equilíbrio ecológico está em risco. Qual a sua estratégia de controle?",
+                op1: "Defensivos químicos convencionais pesados (Ação imediata contra as pragas, mas elimina os insetos polinizadores como abelhas).",
+                op2: "Manejo Integrado de Pragas (MIP) e Bioinsumos (Utiliza armadilhas e inimigos naturais para combater as pragas sem toxinas).",
+                efeitos1: { din: -2000, prod: 5, sust: -25 },
+                efeitos2: { din: -7000, prod: 20, sust: 15 }
+            },
+            {
+                titulo: "ANO 3: Conservação de Recursos Hídricos",
+                narrativa: "A região enfrenta uma forte estiagem. Para manter a produtividade forte sem secar as fontes de água locais, o que fará?",
+                op1: "Sistemas de aspersão convencional ligados por longos períodos (Usa grandes volumes de água dos rios locais sem automação).",
+                op2: "Instalação de gotejamento subterrâneo monitorado por sensores IoT (Irriga direto na raiz apenas quando necessário, economia drástica).",
+                efeitos1: { din: -3000, prod: 5, sust: -20 },
+                efeitos2: { din: -15000, prod: 25, sust: 25 }
+            }
+        ];
+
+        function iniciarJogo() {
+            document.getElementById("tela-inicial").style.display = "none";
+            document.getElementById("tela-jogo").style.display = "block";
             
-    print("\nSeguindo para as decisões do ano...")
-    return 0, 0, 0
-
-def rodar_rodada(ano, texto_ano, op1, op2, din1, prod1, sust1, din2, prod2, sust2, tecnologias):
-    """Função genérica para processar as rodadas de decisão, evitando repetição de código."""
-    print(f"\n📅 ANO {ano}: {texto_ano}")
-    print(f"[1] {op1}")
-    print(f"[2] {op2}")
-    
-    # Bônus por tecnologia nas escolhas
-    if "Drones" in tecnologias and ano == 2:
-        print("💡 (Bônus Drone ativo: Você tem desconto no manejo de pragas!)")
-        din2 += 2000 # O controle biológico fica mais barato
-        
-    escolha = input("Escolha sua ação (1 ou 2): ")
-    if escolha == "1":
-        return din1, prod1, sust1
-    else:
-        return din2, prod2, sust2
-
-def jogar_agrinho():
-    """Função principal que roda a estrutura do jogo."""
-    # Status Iniciais
-    dinheiro = 40000
-    produtividade = 50
-    sustentabilidade = 50
-    tecnologias = []
-
-    print("\n" + "#"*55)
-    print("🌾🌻 ECOFAZENDA V2: O EQUILÍBRIO DA SUSTENTABILIDADE 🌻🌾")
-    print("#"*55)
-    time.sleep(1)
-
-    # LOOP DE ANOS (3 Anos para o jogo ficar dinâmico)
-    for ano in range(1, 4):
-        mostrar_status(dinheiro, produtividade, sustentabilidade, tecnologias)
-        
-        # 1. Fase de Tecnologia
-        custo_tec, bonus_prod, bonus_sust = menu_tecnologia(dinheiro, tecnologias)
-        dinheiro -= custo_tec
-        produtividade += bonus_prod
-        sustentabilidade += bonus_sust
-        
-        # 2. Fase de Decisão (Usando a função genérica)
-        if ano == 1:
-            d_din, d_prod, d_sust = rodar_rodada(
-                1, "Manejo do Solo",
-                "Aração pesada tradicional (Rápido e barato).",
-                "Plantio Direto na palhada (Protege contra erosão, exige maquinário).",
-                10000, 10, -20,  # Consequências Opção 1
-                -5000, 15, 20    # Consequências Opção 2
-            )
-        elif ano == 2:
-            d_din, d_prod, d_sust = rodar_rodada(
-                2, "Combate a Insetos",
-                "Pulverização química total na área.",
-                "Uso de Defensivos Biológicos (Inimigos naturais das pragas).",
-                -2000, 10, -25,
-                -7000, 15, 15
-            )
-        elif ano == 3:
-            d_din, d_prod, d_sust = rodar_rodada(
-                3, "Destinação de Resíduos e Embalagens",
-                "Queimar os plásticos velhos no fundo da fazenda.",
-                "Devolver as embalagens limpas nos postos de Logística Reversa.",
-                0, 5, -30,
-                -2000, 10, 25
-            )
+            dinheiro = 50000;
+            produtividade = 50;
+            sustentabilidade = 50;
+            rodada = 0;
             
-        dinheiro += d_din
-        produtividade += d_prod
-        sustentabilidade += d_sust
+            atualizarDashboard();
+            mostrarFase();
+        }
 
-        # 3. Fase do Clima (Aleatório)
-        time.sleep(1)
-        c_din, c_sust = evento_climatico(sustentabilidade)
-        dinheiro += c_din
-        sustentabilidade += c_sust
-    
-    # FIM DO JOGO
-    print("\n" + "="*50)
-    print("🏁 FIM DO CICLO DE 3 ANOS! RESULTADO FINAL:")
-    mostrar_status(dinheiro, produtividade, sustentabilidade, tecnologias)
-    
-    # Limitadores para não passar de 100 ou cair abaixo de 0 nas exibições finais
-    sustentabilidade = max(0, min(100, sustentabilidade))
-    
-    if sustentabilidade >= 65 and dinheiro > 0:
-        print("🏆 VITÓRIA! O Agrinho tem orgulho de você! Sua produção é forte e respeita o futuro do planeta! 🌍")
-    else:
-        print("❌ FIM DE JOGO! Sua fazenda desequilibrou. Ou faltou dinheiro, ou a natureza cobrou o preço.")
-    print("="*50)
+        function atualizarDashboard() {
+            document.getElementById("txt-dinheiro").innerText = "R$ " + dinheiro.toLocaleString('pt-BR');
+            document.getElementById("txt-prod").innerText = produtividade + "%";
+            document.getElementById("txt-sust").innerText = sustentabilidade + "%";
+        }
 
-# Loop Principal para jogar novamente
-while True:
-    jogar_agrinho()
-    jogar_de_novo = input("\nDeseja jogar novamente? (S/N): ").upper()
-    if jogar_de_novo != 'S':
-        print("Obrigado por jogar! Proteja o nosso Agro Sustentável! 🌱")
-        break
+        function mostrarFase() {
+            if(rodada < fases.length) {
+                let f = fases[rodada];
+                document.getElementById("ano-atual").innerText = f.titulo;
+                document.getElementById("cenario-texto").innerHTML = f.narrativa;
+                document.getElementById("txt-opt1").innerText = f.op1;
+                document.getElementById("txt-opt2").innerText = f.op2;
+                
+                document.getElementById("btn-opt1").style.display = "flex";
+                document.getElementById("btn-opt2").style.display = "flex";
+                document.getElementById("btn-voltar").style.display = "none";
+            } else {
+                finalizarJogo();
+            }
+        }
+
+        function processarEscolha(opcao) {
+            let f = fases[rodada];
+            let efeito = (opcao === 1) ? f.efeitos1 : f.efeitos2;
+            
+            dinheiro += efeito.din;
+            produtividade += efeito.prod;
+            sustentabilidade += efeito.sust;
+            
+            // Limitadores
+            produtividade = Math.max(0, Math.min(100, produtividade));
+            sustentabilidade = Math.max(0, Math.min(100, sustentabilidade));
+            
+            atualizarDashboard();
+            rodada++;
+            mostrarFase();
+        }
+
+        function finalizarJogo() {
+            document.getElementById("ano-atual").innerText = "BALANÇO AMBIENTAL E FINANCEIRO";
+            document.getElementById("btn-opt1").style.display = "none";
+            document.getElementById("btn-opt2").style.display = "none";
+            document.getElementById("btn-voltar").style.display = "block";
+
+            let caixaTexto = document.getElementById("cenario-texto");
+
+            if (sustentabilidade >= 65 && dinheiro > 0) {
+                caixaTexto.innerHTML = "🏆 <b>FAZENDA MODELO AGRINHO!</b><br><br>Parabéns! Você alcançou o equilíbrio perfeito. Sua produtividade está alta, as finanças no azul e o ecossistema preservado. Esse é o Agro forte e o futuro sustentável que nosso país precisa!";
+            } else if (dinheiro <= 0) {
+                caixaTexto.innerHTML = "💸 <b>FALÊNCIA ECONÔMICA!</b><br><br>As contas não fecharam. Para que um projeto de sustentabilidade funcione no campo, ele precisa também ser economicamente viável. Repense seus investimentos!";
+            } else {
+                caixaTexto.innerHTML = "⚠️ <b>COLAPSO AMBIENTAL!</b><br><br>Sua fazenda gerou dinheiro temporário, mas destruiu o solo e esgotou a água da região. No futuro, essa terra não produzirá nada. Lembre-se: sem preservação, não existe produção estável!";
+            }
+        }
+
+        function voltarAoMenu() {
+            document.getElementById("tela-jogo").style.display = "none";
+            document.getElementById("tela-inicial").style.display = "block";
+        }
+    </script>
+</body>
+</html>
