@@ -1,1 +1,170 @@
 
+import time
+import random
+
+def mostrar_status(dinheiro, produtividade, sustentabilidade, tecnologias):
+    """Exibe o painel com o status atual do jogador."""
+    print("\n" + "="*50)
+    print("📊 STATUS DA SUA ECOFAZENDA:")
+    print(f"💰 Orçamento: R$ {dinheiro}")
+    print(f"🌾 Produtividade Atual: {produtividade}%")
+    print(f"🌱 Sustentabilidade: {sustentabilidade}%")
+    print(f"🚀 Tecnologias Desbloqueadas: {', '.join(tecnologias) if tecnologias else 'Nenhuma'}")
+    print("="*50 + "\n")
+
+def evento_climatico(sustentabilidade):
+    """Função que gera um evento aleatório baseado no clima."""
+    print("🌤️  [EVENTO CLIMÁTICO DO ANO]  🌤️")
+    time.sleep(1)
+    
+    evento = random.choice(["seca", "chuva_na_medida", "GEADA"])
+    
+    if evento == "seca":
+        print("⚠️ Uma seca severa atingiu a região!")
+        if sustentabilidade > 60:
+            print("💡 Como sua sustentabilidade é alta, seu solo segurou a umidade! Pouco impacto.")
+            return 0, -5
+        else:
+            print("❌ Solo degradado! A seca causou quebra de safra e prejuízo financeiro.")
+            return -8000, -15
+            
+    elif evento == "GEADA":
+        print("❄️ Uma geada inesperada congelou parte das folhas.")
+        print("Independente do manejo, haverá um pequeno custo de recuperação.")
+        return -4000, -5
+        
+    else:
+        print("🌧️ O clima colaborou! Chuvas na medida certa para a plantação.")
+        return 5000, 5
+
+def menu_tecnologia(dinheiro, tecnologias):
+    """Função que permite comprar tecnologias sustentáveis no início do turno."""
+    print("🔬 LAB DE INOVAÇÃO AGRO:")
+    print("Deseja investir em tecnologia antes de tomar sua decisão?")
+    
+    opcoes = []
+    if "Drones" not in tecnologias:
+        print("[1] Comprar Drones de Monitoramento (Custo: R$ 8.000 | +10% Produtividade)")
+        opcoes.append("1")
+    if "Bioinsumos" not in tecnologias:
+        print("[2] Desenvolver Bioinsumos/Adubo Orgânico (Custo: R$ 6.000 | +15% Sustentabilidade)")
+        opcoes.append("2")
+    print("[0] Não investir em tecnologia agora.")
+    
+    escolha = input("Escolha uma opção: ")
+    
+    if escolha == "1" and "1" in opcoes:
+        if dinheiro >= 8000:
+            print("\n🛸 Drones adquiridos! Agora você detecta pragas mais rápido.")
+            tecnologias.append("Drones")
+            return 8000, 10, 0
+        else:
+            print("\n❌ Saldo insuficiente para comprar Drones.")
+    elif escolha == "2" and "2" in opcoes:
+        if dinheiro >= 6000:
+            print("\n🧪 Bioinsumos liberados! Menos química no seu solo.")
+            tecnologias.append("Bioinsumos")
+            return 6000, 0, 15
+        else:
+            print("\n❌ Saldo insuficiente para Bioinsumos.")
+            
+    print("\nSeguindo para as decisões do ano...")
+    return 0, 0, 0
+
+def rodar_rodada(ano, texto_ano, op1, op2, din1, prod1, sust1, din2, prod2, sust2, tecnologias):
+    """Função genérica para processar as rodadas de decisão, evitando repetição de código."""
+    print(f"\n📅 ANO {ano}: {texto_ano}")
+    print(f"[1] {op1}")
+    print(f"[2] {op2}")
+    
+    # Bônus por tecnologia nas escolhas
+    if "Drones" in tecnologias and ano == 2:
+        print("💡 (Bônus Drone ativo: Você tem desconto no manejo de pragas!)")
+        din2 += 2000 # O controle biológico fica mais barato
+        
+    escolha = input("Escolha sua ação (1 ou 2): ")
+    if escolha == "1":
+        return din1, prod1, sust1
+    else:
+        return din2, prod2, sust2
+
+def jogar_agrinho():
+    """Função principal que roda a estrutura do jogo."""
+    # Status Iniciais
+    dinheiro = 40000
+    produtividade = 50
+    sustentabilidade = 50
+    tecnologias = []
+
+    print("\n" + "#"*55)
+    print("🌾🌻 ECOFAZENDA V2: O EQUILÍBRIO DA SUSTENTABILIDADE 🌻🌾")
+    print("#"*55)
+    time.sleep(1)
+
+    # LOOP DE ANOS (3 Anos para o jogo ficar dinâmico)
+    for ano in range(1, 4):
+        mostrar_status(dinheiro, produtividade, sustentabilidade, tecnologias)
+        
+        # 1. Fase de Tecnologia
+        custo_tec, bonus_prod, bonus_sust = menu_tecnologia(dinheiro, tecnologias)
+        dinheiro -= custo_tec
+        produtividade += bonus_prod
+        sustentabilidade += bonus_sust
+        
+        # 2. Fase de Decisão (Usando a função genérica)
+        if ano == 1:
+            d_din, d_prod, d_sust = rodar_rodada(
+                1, "Manejo do Solo",
+                "Aração pesada tradicional (Rápido e barato).",
+                "Plantio Direto na palhada (Protege contra erosão, exige maquinário).",
+                10000, 10, -20,  # Consequências Opção 1
+                -5000, 15, 20    # Consequências Opção 2
+            )
+        elif ano == 2:
+            d_din, d_prod, d_sust = rodar_rodada(
+                2, "Combate a Insetos",
+                "Pulverização química total na área.",
+                "Uso de Defensivos Biológicos (Inimigos naturais das pragas).",
+                -2000, 10, -25,
+                -7000, 15, 15
+            )
+        elif ano == 3:
+            d_din, d_prod, d_sust = rodar_rodada(
+                3, "Destinação de Resíduos e Embalagens",
+                "Queimar os plásticos velhos no fundo da fazenda.",
+                "Devolver as embalagens limpas nos postos de Logística Reversa.",
+                0, 5, -30,
+                -2000, 10, 25
+            )
+            
+        dinheiro += d_din
+        produtividade += d_prod
+        sustentabilidade += d_sust
+
+        # 3. Fase do Clima (Aleatório)
+        time.sleep(1)
+        c_din, c_sust = evento_climatico(sustentabilidade)
+        dinheiro += c_din
+        sustentabilidade += c_sust
+    
+    # FIM DO JOGO
+    print("\n" + "="*50)
+    print("🏁 FIM DO CICLO DE 3 ANOS! RESULTADO FINAL:")
+    mostrar_status(dinheiro, produtividade, sustentabilidade, tecnologias)
+    
+    # Limitadores para não passar de 100 ou cair abaixo de 0 nas exibições finais
+    sustentabilidade = max(0, min(100, sustentabilidade))
+    
+    if sustentabilidade >= 65 and dinheiro > 0:
+        print("🏆 VITÓRIA! O Agrinho tem orgulho de você! Sua produção é forte e respeita o futuro do planeta! 🌍")
+    else:
+        print("❌ FIM DE JOGO! Sua fazenda desequilibrou. Ou faltou dinheiro, ou a natureza cobrou o preço.")
+    print("="*50)
+
+# Loop Principal para jogar novamente
+while True:
+    jogar_agrinho()
+    jogar_de_novo = input("\nDeseja jogar novamente? (S/N): ").upper()
+    if jogar_de_novo != 'S':
+        print("Obrigado por jogar! Proteja o nosso Agro Sustentável! 🌱")
+        break
